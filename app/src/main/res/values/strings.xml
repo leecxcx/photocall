@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">photocall</string>
+    <string name="title_activity_contacts_add_form">ContactsAddForm</string>
+    <string name="button">Button</string>
+</resources>
