@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">photocall</string>
+    <string name="app_name">相册电话</string>
     <string name="title_activity_contacts_add_form">ContactsAddForm</string>
-    <string name="button">Button</string>
+    <string name="update">修改</string>
+    <string name="delete">删除</string>
+    <string name="add">新增</string>
+    <string name="_49988">49988</string>
 </resources>

@@ -5,14 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
     tools:context=".activity.MainActivity">
-    <LinearLayout
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainTb"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorTitleBar"
+        app:navigationContentDescription=""
+        app:popupTheme="@style/ToolbarPopupTheme">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="相册电话"
+            android:textColor="@color/toolBarTitle"
+            android:textSize="18dp" />
+        />
+    </android.support.v7.widget.Toolbar>
 
 
-    </LinearLayout>
+    <android.support.design.widget.TabLayout
+        android:id="@+id/mytab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabSelectedTextColor="@color/tabBarSelectTitle"
+        app:tabMode="scrollable"
+        >
+    </android.support.design.widget.TabLayout>
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager"
