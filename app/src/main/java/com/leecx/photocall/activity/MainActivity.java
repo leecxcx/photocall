@@ -28,6 +28,7 @@ import com.leecx.photocall.R;
 import com.leecx.photocall.dao.DBManager;
 import com.leecx.photocall.domain.People;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,7 +121,7 @@ public class MainActivity extends Activity {
         }
 
         final String idStr = String.valueOf(id);
-        People people = map.get(id);
+        final People people = map.get(id);
         final long rawContactId = people.getRawContactId();
 
         AlertDialog confirmDialog = new AlertDialog.Builder(MainActivity.this)
@@ -132,6 +133,7 @@ public class MainActivity extends Activity {
                         db.deleteById(idStr);
                         deleteSysContacts(rawContactId);
                         restartActivity(MainActivity.this);
+                        deletePhoto(people.getPhotoPath());
                     }
                 })
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -173,6 +175,15 @@ public class MainActivity extends Activity {
 
         uri = Uri.parse("content://com.android.contacts/data");
         resolver.delete(uri, "raw_contact_id=?", new String[]{String.valueOf(rawContactId)});
+    }
+
+    private void deletePhoto(String filePath){
+        File file = new File(filePath);
+        if (file.exists() && file.isFile()) {
+            if (file.delete()) {
+                return;
+            }
+        }
     }
 
     public void onResume() {

@@ -1,9 +1,11 @@
 package com.leecx.photocall.activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -157,16 +159,25 @@ public class ContactsAddFormActivity extends AppCompatActivity {
     }
 
     private void saveContacts() {
-        Object o = inputName.getText();
-        if (o != null) {
-            name = o.toString();
+        Object oName = inputName.getText();
+        if (oName == null || "".equals(oName.toString())) {
+            alertTip("姓名不能为空");
+            return;
         }
 
-        o = inputPhoneNum.getText();
-        if (o != null) {
-            phoneNum = o.toString();
+        Object oPhone = inputPhoneNum.getText();
+        if (oPhone == null || "".equals(oPhone.toString())) {
+            alertTip("电话号码不能为空");
+            return;
         }
 
+        if (mUriPath == null || mUriPath.getPath() == null || "".equals(mUriPath.getPath())) {
+            alertTip("照片不能为空");
+            return;
+        }
+
+        name = oName.toString();
+        phoneNum = oPhone.toString();
         photoPath = mUriPath.getPath();
 
         People people = new People();
@@ -192,6 +203,22 @@ public class ContactsAddFormActivity extends AppCompatActivity {
 
 
         this.finish();
+    }
+
+
+    private void alertTip(String msg){
+        AlertDialog confirmDialog = new AlertDialog.Builder(ContactsAddFormActivity.this)
+                .setTitle("提示")//标题
+                .setIcon(R.mipmap.ic_launcher)//图标
+                .setMessage(msg)
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        return;
+                    }
+                })
+                .create();
+        confirmDialog.show();
     }
 
     private void saveSysContacts(People people) {
