@@ -13,7 +13,9 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/colorTitleBar"
         app:navigationContentDescription=""
-        app:popupTheme="@style/ToolbarPopupTheme">
+        app:popupTheme="@style/ToolbarPopupTheme"
+        android:theme="@style/ToolbarTheme"
+        app:titleTextColor="@color/white">
 
         <TextView
             android:id="@+id/title"
@@ -21,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:text="相册电话"
-            android:textColor="@color/toolBarTitle"
+            android:textColor="@color/white"
             android:textSize="18dp" />
         />
     </android.support.v7.widget.Toolbar>

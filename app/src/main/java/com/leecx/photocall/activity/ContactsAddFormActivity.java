@@ -22,11 +22,15 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.leecx.photocall.R;
@@ -67,7 +71,6 @@ public class ContactsAddFormActivity extends AppCompatActivity {
     private EditText inputPhoneNum = null;
     private Button btnAlbum = null;
     private Button btnCamera = null;
-    private Button btnSave = null;
     private Bundle bundle = null;
     private DBManager db = null;
 
@@ -76,6 +79,8 @@ public class ContactsAddFormActivity extends AppCompatActivity {
     private String phoneNum = "";
     private String photoPath = "";
     private long rawContactId = 0l;
+    private  Toolbar toolbar;
+    private TextView title;
 
 
     @Override
@@ -83,27 +88,35 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_add_form);
 
-//        X_SystemBarUI.initSystemBar(this, R.color.colorTitle);
-
-
         mExtStorDir = Environment.getExternalStorageDirectory().toString();
         headImage = (ImageView) findViewById(R.id.imgViewForm);
         inputName = (EditText) findViewById(R.id.inputName);
         inputPhoneNum = (EditText) findViewById(R.id.inputPhoneNum);
         btnAlbum = (Button) findViewById(R.id.btnAlbum);
         btnCamera = (Button) findViewById(R.id.btnCamera);
-        btnSave = (Button) findViewById(R.id.btnSave);
         bundle = this.getIntent().getExtras();
+        toolbar = (Toolbar) findViewById(R.id.formTb);
+        title = (TextView) findViewById(R.id.formTitle);
+        toolbar.inflateMenu(R.menu.form_toolbar_menu);
 
         db = new DBManager(this);
 
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setHomeButtonEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window window = getWindow();
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                window.setStatusBarColor(getResources().getColor(R.color.colorTitleBar));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
+        bindBtnEvent();
+        setItemValue();
+    }
+
+    private void bindBtnEvent(){
         btnAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,14 +131,27 @@ public class ContactsAddFormActivity extends AppCompatActivity {
             }
         });
 
-        btnSave.setOnClickListener(new View.OnClickListener() {
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
-            public void onClick(View v) {
-                saveContacts();//检查是否有权限
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.action_save:
+                        saveContacts();//检查是否有权限
+                        break;
+                }
+                return true;
             }
         });
 
-        setItemValue();
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
+
     }
 
     private void setItemValue() {
@@ -136,6 +162,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
             inputPhoneNum.setText(bundle.getString("phoneNum"));
             rawContactId = bundle.getLong("rawContactId");
             mUriPath = Uri.parse("file://" + bundle.getString("photoPath"));
+            title.setText("修改联系人："+bundle.getString("name"));
             if (mUriPath != null) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mUriPath);

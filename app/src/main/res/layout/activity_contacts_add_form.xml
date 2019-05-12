@@ -6,6 +6,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/formTb"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorTitleBar"
+        app:navigationContentDescription=""
+        app:navigationIcon="@mipmap/icon_giveup"
+        app:popupTheme="@style/ToolbarPopupTheme">
+
+        <TextView
+            android:id="@+id/formTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="新增联系人"
+            android:textColor="@color/white"
+            android:textSize="18dp" />
+        />
+    </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="67dp"
@@ -81,29 +101,6 @@
             android:layout_width="match_parent"
             android:layout_height="259dp"
             tools:src="@tools:sample/avatars" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="81dp"
-            android:orientation="horizontal">
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="47dp"
-                android:layout_weight="1" />
-
-            <Button
-                android:id="@+id/btnSave"
-                style="@style/Widget.AppCompat.Button.Colored"
-                android:layout_width="146dp"
-                android:layout_height="wrap_content"
-                android:text="保存" />
-
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="46dp"
-                android:layout_weight="1" />
-        </LinearLayout>
 
     </LinearLayout>
 
