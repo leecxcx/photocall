@@ -2,6 +2,7 @@ package com.leecx.photocall.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -23,6 +24,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -67,40 +70,54 @@ public class ContactsAddFormActivity extends AppCompatActivity {
 
     private String action = "";
 
-    private EditText inputName = null;
-    private EditText inputPhoneNum = null;
-    private Button btnAlbum = null;
-    private Button btnCamera = null;
-    private Bundle bundle = null;
-    private DBManager db = null;
+    private EditText inputName;
+    private EditText inputPhoneNum;
+    private Button btnPhotoChoice;
+    private Bundle bundle;
+    private DBManager db;
 
     private String id = "";
     private String name = "";
     private String phoneNum = "";
     private String photoPath = "";
     private long rawContactId = 0l;
-    private  Toolbar toolbar;
+    private Toolbar toolbar;
     private TextView title;
-
+    private Dialog dialog;
+    private View inflate;
+    private TextView camera;
+    private TextView pic;
+    private TextView cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts_add_form);
 
+        initWidget();
+        setStatusStyle();
+        initDbManager();
+        bindBtnEvent();
+        setItemValue();
+    }
+
+    private void initDbManager() {
+        db = new DBManager(this);
+    }
+
+    private void initWidget() {
         mExtStorDir = Environment.getExternalStorageDirectory().toString();
         headImage = (ImageView) findViewById(R.id.imgViewForm);
         inputName = (EditText) findViewById(R.id.inputName);
         inputPhoneNum = (EditText) findViewById(R.id.inputPhoneNum);
-        btnAlbum = (Button) findViewById(R.id.btnAlbum);
-        btnCamera = (Button) findViewById(R.id.btnCamera);
+        btnPhotoChoice = (Button) findViewById(R.id.btnCamera);
         bundle = this.getIntent().getExtras();
         toolbar = (Toolbar) findViewById(R.id.formTb);
         title = (TextView) findViewById(R.id.formTitle);
         toolbar.inflateMenu(R.menu.form_toolbar_menu);
+    }
 
-        db = new DBManager(this);
-
+    private void setStatusStyle() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Window window = getWindow();
@@ -110,24 +127,13 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-        bindBtnEvent();
-        setItemValue();
     }
 
-    private void bindBtnEvent(){
-        btnAlbum.setOnClickListener(new View.OnClickListener() {
+    private void bindBtnEvent() {
+        btnPhotoChoice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkReadPermission();
-            }
-        });
-
-        btnCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                checkStoragePermission();//检查是否有权限
+                showPhotoChoiceDialog();
             }
         });
 
@@ -136,7 +142,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.action_save:
-                        saveContacts();//检查是否有权限
+                        saveContacts();
                         break;
                 }
                 return true;
@@ -151,8 +157,51 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         });
 
 
-
     }
+
+    public void showPhotoChoiceDialog() {
+        dialog = new Dialog(this, R.style.DialogTheme);
+        //填充对话框的布局
+        inflate = LayoutInflater.from(this).inflate(R.layout.choic_photo, null);
+        //初始化控件
+        camera = (TextView) inflate.findViewById(R.id.camera);
+        pic = (TextView) inflate.findViewById(R.id.pic);
+        cancel = (TextView) inflate.findViewById(R.id.cancel);
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkStoragePermission();
+                dialog.dismiss();
+            }
+        });
+        pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkReadPermission();
+                dialog.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        //将布局设置给Dialog
+        dialog.setContentView(inflate);
+        //获取当前Activity所在的窗体
+        Window dialogWindow = dialog.getWindow();
+        //设置Dialog从窗体底部弹出
+        dialogWindow.setGravity(Gravity.BOTTOM);
+        dialogWindow.setWindowAnimations(R.style.main_menu_animStyle);
+        //获得窗体的属性
+        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+        lp.y = 2;//设置Dialog距离底部的距离
+        //将属性设置给窗体
+        dialogWindow.setAttributes(lp);
+        dialog.show();//显示对话框
+    }
+
 
     private void setItemValue() {
         action = bundle.getString("action");
@@ -162,7 +211,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
             inputPhoneNum.setText(bundle.getString("phoneNum"));
             rawContactId = bundle.getLong("rawContactId");
             mUriPath = Uri.parse("file://" + bundle.getString("photoPath"));
-            title.setText("修改联系人："+bundle.getString("name"));
+            title.setText("修改联系人：" + bundle.getString("name"));
             if (mUriPath != null) {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), mUriPath);
@@ -175,15 +224,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 
     private void saveContacts() {
         Object oName = inputName.getText();
@@ -233,7 +274,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
     }
 
 
-    private void alertTip(String msg){
+    private void alertTip(String msg) {
         AlertDialog confirmDialog = new AlertDialog.Builder(ContactsAddFormActivity.this)
                 .setTitle("提示")//标题
                 .setIcon(R.mipmap.ic_launcher)//图标
@@ -273,8 +314,6 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         values.put(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE);
         values.put(ContactsContract.CommonDataKinds.Photo.PHOTO, getByteByUri(people.getPhotoPath()));
         getContentResolver().insert(ContactsContract.Data.CONTENT_URI, values);
-
-
     }
 
 

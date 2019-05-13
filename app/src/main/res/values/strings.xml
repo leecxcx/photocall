@@ -6,4 +6,8 @@
     <string name="add">新增</string>
     <string name="save">保存</string>
     <string name="_49988">49988</string>
+    <string name="form_name">姓名</string>
+    <string name="form_add_people">新增联系人</string>
+    <string name="form_text_phone">电话</string>
+    <string name="form_text_photo">照片</string>
 </resources>

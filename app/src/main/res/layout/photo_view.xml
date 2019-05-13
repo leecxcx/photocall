@@ -5,17 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:gravity="center"
+    android:gravity="bottom"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/phoneText"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_gravity="center_horizontal"
-        android:text="13950141100"
-        android:textAlignment="center"
-        android:textSize="40sp" />
+        android:layout_height="3dp"
+        android:background="@color/colorTitleBar" />
 
     <ImageView
         android:id="@+id/imgViewMain"
@@ -23,4 +19,15 @@
         android:layout_height="361dp"
         android:contentDescription="@string/_49988"
         tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/phoneText"
+        android:layout_width="match_parent"
+        android:layout_height="118dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="@color/colorTitleBar"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="30sp" />
 </LinearLayout>

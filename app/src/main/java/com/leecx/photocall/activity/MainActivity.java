@@ -35,14 +35,14 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity {
-    private ViewPager pager = null;
+    private ViewPager pager;
 
-    private DBManager db = null;
+    private DBManager db;
     private Map<Integer, People> map = new HashMap<>();
     private List<View> pages = new ArrayList<>();
     private boolean firstLauch = true;
-    private Toolbar toolbar = null;
-    private TabLayout mytab;
+    private Toolbar toolbar;
+    private TabLayout tabLayout;
 
     private List<String> mTabTitles;
 
@@ -52,16 +52,26 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setStatusStyle();
+        initWidget();
+        initDbManager();
+        showAllPeople();
+        bingBtnEvent();
+    }
+
+    private void initDbManager(){
+        db = new DBManager(this);
+    }
+
+    private void initWidget() {
         pager = (ViewPager) findViewById(R.id.viewPager);
         toolbar = (Toolbar) findViewById(R.id.mainTb);
-        mytab = (TabLayout) findViewById(R.id.mytab);
+        tabLayout = (TabLayout) findViewById(R.id.mytab);
         db = new DBManager(this);
-
         toolbar.inflateMenu(R.menu.main_toolbar_menu);
+    }
 
-        showAllContacts();
-        bingBtnEvent();
-
+    private void setStatusStyle() {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 Window window = getWindow();
@@ -71,8 +81,6 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -177,7 +185,7 @@ public class MainActivity extends Activity {
         resolver.delete(uri, "raw_contact_id=?", new String[]{String.valueOf(rawContactId)});
     }
 
-    private void deletePhoto(String filePath){
+    private void deletePhoto(String filePath) {
         File file = new File(filePath);
         if (file.exists() && file.isFile()) {
             if (file.delete()) {
@@ -203,7 +211,7 @@ public class MainActivity extends Activity {
     }
 
 
-    private void showAllContacts() {
+    private void showAllPeople() {
         List<People> peopleList = db.findAllContacts();
         if (peopleList == null || peopleList.size() <= 0) {
             return;
@@ -214,7 +222,7 @@ public class MainActivity extends Activity {
 
         for (People c : peopleList) {
             map.put(c.getId(), c);
-            mytab.addTab(mytab.newTab().setText(c.getName()));
+            tabLayout.addTab(tabLayout.newTab().setText(c.getName()));
             mTabTitles.add(c.getName());
 
             Uri uri = Uri.parse("file://" + c.getPhotoPath());
@@ -262,10 +270,10 @@ public class MainActivity extends Activity {
         PagerAdapter adapter = new ViewAdapter(pages);
         pager.setAdapter(adapter);
 
-        mytab.setupWithViewPager(pager);
+        tabLayout.setupWithViewPager(pager);
 
         for (int i = 0; i < mTabTitles.size(); i++) {
-            mytab.getTabAt(i).setText(mTabTitles.get(i));
+            tabLayout.getTabAt(i).setText(mTabTitles.get(i));
         }
     }
 

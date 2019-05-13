@@ -7,5 +7,6 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="toolBarTitle">#413F3F</color>
-    <color name="tabBarSelectTitle">#095353</color>
+    <color name="photoChoiceSplit">#C4C3C3</color>
+    <color name="tabBarSelectTitle">#F58C3B</color>
 </resources>
