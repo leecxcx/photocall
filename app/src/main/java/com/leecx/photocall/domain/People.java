@@ -6,6 +6,15 @@ public class People {
     private String phoneNum;
     private String photoPath;
     private Long rawContactId;
+    private Integer orderNo;
+
+    public Integer getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(Integer orderNo) {
+        this.orderNo = orderNo;
+    }
 
     public Long getRawContactId() {
         return rawContactId;

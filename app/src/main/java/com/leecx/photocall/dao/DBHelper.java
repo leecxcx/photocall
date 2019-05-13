@@ -20,7 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
                         "name VARCHAR," +
                         "phoneNum VARCHAR, " +
                         "photoPath TEXT," +
-                        "rawContactId TEXT)"
+                        "rawContactId TEXT," +
+                        "orderNo INTEGER)"
         );
     }
 

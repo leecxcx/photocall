@@ -113,6 +113,7 @@ public class MainActivity extends Activity {
         intent.putExtra("phoneNum", people.getPhoneNum());
         intent.putExtra("photoPath", people.getPhotoPath());
         intent.putExtra("rawContactId", people.getRawContactId());
+        intent.putExtra("orderNo", String.valueOf(people.getOrderNo()));
         startActivity(intent);
     }
 

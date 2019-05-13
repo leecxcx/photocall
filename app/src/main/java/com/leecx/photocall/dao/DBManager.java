@@ -23,8 +23,8 @@ public class DBManager {
         db.beginTransaction();
         try {
             for (People p : persons) {
-                db.execSQL("INSERT INTO people VALUES(null,?,?,?,?)",
-                        new Object[]{p.getName(), p.getPhoneNum(), p.getPhotoPath(),p.getRawContactId()});
+                db.execSQL("INSERT INTO people VALUES(null,?,?,?,?,?)",
+                        new Object[]{p.getName(), p.getPhoneNum(), p.getPhotoPath(), p.getRawContactId(), p.getOrderNo()});
             }
             db.setTransactionSuccessful();
         } catch (Exception e) {
@@ -39,6 +39,7 @@ public class DBManager {
         cv.put("name", p.getName());
         cv.put("phoneNum", p.getPhoneNum());
         cv.put("photoPath", p.getPhotoPath());
+        cv.put("orderNo", p.getOrderNo());
         db.update("people", cv, "id=?", new String[]{String.valueOf(p.getId())});
     }
 
@@ -48,7 +49,7 @@ public class DBManager {
 
     public List<People> findAllContacts() {
         ArrayList<People> peopleArrayList = new ArrayList<People>();
-        Cursor c = db.rawQuery("SELECT * FROM people", null);
+        Cursor c = db.rawQuery("SELECT * FROM people order by orderNo asc", null);
         while (c.moveToNext()) {
             People people = new People();
             people.setId(c.getInt(c.getColumnIndex("id")));
@@ -56,10 +57,22 @@ public class DBManager {
             people.setPhoneNum(c.getString(c.getColumnIndex("phoneNum")));
             people.setPhotoPath(c.getString(c.getColumnIndex("photoPath")));
             people.setRawContactId(c.getLong(c.getColumnIndex("rawContactId")));
+            people.setOrderNo(c.getInt(c.getColumnIndex("orderNo")));
             peopleArrayList.add(people);
         }
         c.close();
         return peopleArrayList;
+    }
+
+    public Integer getNextOrderNo() {
+        Integer order = 0;
+        Cursor c = db.rawQuery("SELECT max(orderNo) FROM people ", null);
+        while (c.moveToNext()) {
+
+            order = c.getInt(0);
+        }
+        c.close();
+        return order + 1;
     }
 
     //    public void dropTable(){

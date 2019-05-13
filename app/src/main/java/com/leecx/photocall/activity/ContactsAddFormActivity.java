@@ -72,6 +72,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
 
     private EditText inputName;
     private EditText inputPhoneNum;
+    private EditText inputOrderNo;
     private Button btnPhotoChoice;
     private Bundle bundle;
     private DBManager db;
@@ -80,6 +81,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
     private String name = "";
     private String phoneNum = "";
     private String photoPath = "";
+    private String orderNo = "";
     private long rawContactId = 0l;
     private Toolbar toolbar;
     private TextView title;
@@ -110,6 +112,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         headImage = (ImageView) findViewById(R.id.imgViewForm);
         inputName = (EditText) findViewById(R.id.inputName);
         inputPhoneNum = (EditText) findViewById(R.id.inputPhoneNum);
+        inputOrderNo = (EditText) findViewById(R.id.inputOrderNo);
         btnPhotoChoice = (Button) findViewById(R.id.btnCamera);
         bundle = this.getIntent().getExtras();
         toolbar = (Toolbar) findViewById(R.id.formTb);
@@ -220,6 +223,7 @@ public class ContactsAddFormActivity extends AppCompatActivity {
             id = bundle.getString("id");
             inputName.setText(bundle.getString("name"));
             inputPhoneNum.setText(bundle.getString("phoneNum"));
+            inputOrderNo.setText(bundle.getString("orderNo"));
             rawContactId = bundle.getLong("rawContactId");
             mUriPath = Uri.parse("file://" + bundle.getString("photoPath"));
             title.setText("修改联系人：" + bundle.getString("name"));
@@ -231,6 +235,9 @@ public class ContactsAddFormActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+        } else {
+            Integer orderNo = db.getNextOrderNo();
+            inputOrderNo.setText(String.valueOf(orderNo));
         }
 
     }
@@ -254,20 +261,28 @@ public class ContactsAddFormActivity extends AppCompatActivity {
             return;
         }
 
+        Object oOrderNo = inputOrderNo.getText();
+        if (oOrderNo == null || "".equals(oOrderNo.toString())) {
+            alertTip("排序不能为空");
+            return;
+        }
+
         name = oName.toString();
         phoneNum = oPhone.toString();
         photoPath = mUriPath.getPath();
+        orderNo = oOrderNo.toString();
+
 
         People people = new People();
         people.setName(name);
         people.setPhoneNum(phoneNum);
         people.setPhotoPath(photoPath);
         people.setRawContactId(rawContactId);
+        people.setOrderNo(Integer.parseInt(orderNo));
 
 
         if ("update".equals(action)) {
             people.setId(Integer.parseInt(id));
-
             updateSysContacts(people);
             db.update(people);
         } else {
