@@ -14,7 +14,7 @@
         android:padding="15dp"
         android:text="拍照"
         android:textColor="@color/toolBarTitle"
-        android:textSize="20sp"
+        android:textSize="20dp"
         tools:ignore="HardcodedText,RtlHardcoded" />
 
     <View

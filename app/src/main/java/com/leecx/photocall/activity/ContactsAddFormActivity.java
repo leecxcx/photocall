@@ -191,12 +191,23 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         dialog.setContentView(inflate);
         //获取当前Activity所在的窗体
         Window dialogWindow = dialog.getWindow();
+
+        // 把 DecorView 的默认 padding 取消，同时 DecorView 的默认大小也会取消
+        dialogWindow.getDecorView().setPadding(0, 0, 0, 0);
+        WindowManager.LayoutParams layoutParams = dialogWindow.getAttributes();
+        // 设置宽度
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        dialogWindow.setAttributes(layoutParams);
+        // 给 DecorView 设置背景颜色，很重要，不然导致 Dialog 内容显示不全，有一部分内容会充当 padding，上面例子有举出
+        dialogWindow.getDecorView().setBackgroundColor(getResources().getColor(R.color.white));
+
+
         //设置Dialog从窗体底部弹出
         dialogWindow.setGravity(Gravity.BOTTOM);
         dialogWindow.setWindowAnimations(R.style.main_menu_animStyle);
         //获得窗体的属性
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        lp.y = 2;//设置Dialog距离底部的距离
+        lp.y = 5;//设置Dialog距离底部的距离
         //将属性设置给窗体
         dialogWindow.setAttributes(lp);
         dialog.show();//显示对话框
@@ -223,7 +234,6 @@ public class ContactsAddFormActivity extends AppCompatActivity {
         }
 
     }
-
 
 
     private void saveContacts() {
