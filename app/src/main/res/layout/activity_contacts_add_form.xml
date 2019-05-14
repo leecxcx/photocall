@@ -89,7 +89,8 @@
                 android:layout_weight="1"
                 android:autofillHints=""
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/inputPhoneNum"
@@ -98,7 +99,8 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:importantForAutofill="no"
-                android:inputType="phone" />
+                android:inputType="phone"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/inputOrderNo"
@@ -107,7 +109,8 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:importantForAutofill="no"
-                android:inputType="" />
+                android:inputType=""
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnCamera"
