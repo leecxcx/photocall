@@ -9,6 +9,8 @@
 /build
 /captures
 .externalNativeBuild
+/.idea/
+/app/release/
 
 .DS_Store
 .idea/vcs.xml
